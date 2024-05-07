@@ -9,6 +9,7 @@ app.get('/movies', async (req, res) => {
     if (movie_title == "") {
         res.status(400);
         res.send('Error: Please include a title in your request.')
+        return;
     }
 
     let url = `https://api.themoviedb.org/3/search/movie?query=${movie_title}&include_adult=false&language=en-US&region=US`;
@@ -35,8 +36,10 @@ app.get('/movies', async (req, res) => {
         response_arr.push(respObj);
     });
     
+    // the following line is only for this project and SHOULD NOT be used in production
+    res.header("Access-Control-Allow-Origin", "*");
     res.send(response_arr);
 });
 
 
-app.listen(3000, () => console.log('Backend is not listening on port 3000.'));
+app.listen(3001, () => console.log('Backend is not listening on port 3001.'));
