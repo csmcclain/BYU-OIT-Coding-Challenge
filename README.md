@@ -4,11 +4,26 @@ Hello, this is my submission for the coding challenge. I have a very basic websi
 
 ## Backend
 
-I started on the backend first. I used express as the embedded server. I tried to add unit tests with chai and mocha but I was unsuccessful. I'll be studying up on how to add those to my testing framework.
+I started on the backend first. I used express as the embedded server. Used Mocha and Chai to test the code I wrote.
+
+To run the server first ensure you have a .env file in the webservice directory with the following contents:
+
+```text
+API_TOKEN=<API TOKEN FOR themoviedb.org>
+```
+
+Then you can run the following:
 
 ```bash
 cd webservice
 node server.js
+```
+
+You may finally run the unit test in a new terminal:
+
+```bash
+cd webservice
+npm run test
 ```
 
 ## To run the frontend

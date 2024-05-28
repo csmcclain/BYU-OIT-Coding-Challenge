@@ -1,44 +1,82 @@
 <template>
-    <div>
-        <h1>Welcome to the Movie Search Website</h1>
-        <h2>Use the search bar below to search for a movie.</h2>
-        <h3>Yes this is a very basic website...</h3>
-        <input v-model="text"/>
-        <button @click="refresh()">Search</button>
-        <div class="featuredBlock">
-            <div v-for="movie in movies">
-                <Movie :movie="movie" :key="movie._id"/>
-            </div>
+    <div class="mainContainer">
+        <div class="searchContainer">
+            <h1>Welcome to the Movie Search Website</h1>
+            <h2>Use the search bar below to search for a movie.</h2>
+            <input v-model.trim="text" @keydown.enter="fetchMovies"/>
+            <button @click="fetchMovies" :disabled="text.length === 0">Search</button>
         </div>
-
-
+        <div class="featuredBlock">
+            <TransitionGroup name="movies" appear>
+                <Movie v-for="(movie, index) in movies" :movie="movie" :key="movie.movie_id"/>
+            </TransitionGroup>
+        </div>
     </div>
 </template>
   
 <script setup>
-import { ref } from 'vue';
 
-let text = ref("");
-let url = `http://localhost:3001/movies?search=tron`;
+const text = ref("");
+const movies = ref([]);
 
-const {pending, data: movies} = await useLazyFetch(url, {server: false});
-watch(movies, (newMovies) => {
-    console.log(newMovies);
-})
-
-async function refresh() {
-    await refreshNuxtData();
-}
+const fetchMovies = async () => {
+    movies.value = [];
+    movies.value  = await $fetch(`http://localhost:3001/movies?search=${encodeURI(text.value)}`);
+};
 
 </script>
 
-<style>
+<style scoped>
+    div {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    
+    button {
+        display: block;
+        margin: 10px auto;
+        font-family: inherit;
+        font-size: 20px;
+        width: 10vw;
+        height: 30px;
+        border: none;
+        background-color: lightgray;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input {
+        height: 30px;
+        font-size: 20px;
+        width: 10vw;
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    .searchContainer {
+        margin: auto;
+        text-align: center;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+
     .featuredBlock {
 		display: flex;
 		flex-wrap: wrap;
-		row-gap: 30px;
-		column-gap: 40px;
+        column-gap: 10px;
+        row-gap: 10px;
 		justify-content: space-between;
 		width: auto;
-	}
+    }
+
+    /* MOVIES TRANSITION */
+
+    .movies-enter-from {
+        opacity: 0;
+    }
+
+
+    .movies-enter-active {
+        transition: all 1.0s ease;
+    }
 </style>
